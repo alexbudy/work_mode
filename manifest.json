@@ -1,0 +1,25 @@
+{
+	"manifest_version": 2,
+	"name": "Work Mode",
+	"version": "0.1",
+    "description": "This extension lets you enter 'Work Mode' with a click, blocking distracting websites.",
+    "browser_action": {
+        "default_icon": "workmode.png",
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "scripts": ["background.js"]
+    },
+    "permissions" : [
+        "storage"
+    ],
+	"content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": ["content.js"],
+            "run_at": "document_start"
+        }
+	]
+}

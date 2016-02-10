@@ -1,0 +1,31 @@
+body {
+	font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+	font-size: 100%;
+	width: 300;
+	height: 180;
+	background-image: linear-gradient(#c9c6c5, #eeeeee);
+	text-align: center;
+	color: #292926;
+	border: 2px solid #292926;
+	margin: 0;
+	padding: 0;
+}
+
+#working_status_div {
+    position: absolute;
+    top:105;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    font-size: 130%;
+
+    margin: auto;
+}
+
+#stopWorkingBtn { 
+	position: absolute;
+	bottom: 20;
+	left: 107;
+}
+
