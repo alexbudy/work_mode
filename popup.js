@@ -4,11 +4,36 @@ function setWorkingFlag(flag) {
 	obj['workingNow'] = flag
 
 	chrome.storage.sync.set(obj)
+
+	// set popup icon
+	if (flag) {
+		chrome.browserAction.setIcon({
+	        path:"workmode_on.png",
+	    });
+	    chrome.browserAction.setBadgeText({
+	        text:"ON",
+	    });
+	} else {
+		chrome.browserAction.setIcon({
+	        path:"workmode_off.png",
+	    });
+		chrome.browserAction.setBadgeText({
+	        text:"OFF",
+	    });
+	}
 }
 
 function saveBlockedSites() {
+	sites = this.value.split("\n")
+	for (var i = 0; i < sites.length; i++) {
+		if (!sites[i]) {
+			sites.splice(i, 1)
+			i--
+		}
+	}
+
 	var obj = {}
-	obj['sitesToBlock'] = this.value.split("\n").join(",")
+	obj['sitesToBlock'] = sites.join(",")
 
 	chrome.storage.sync.set(obj)
 }
@@ -16,7 +41,6 @@ function saveBlockedSites() {
 document.addEventListener('DOMContentLoaded', function() {
 	var button = document.getElementById("stopWorkingBtn");
 	var textArea = document.getElementById("blockedSitesTextArea");
-
 
 	chrome.storage.sync.get({
 	        'sitesToBlock' : "facebook,espn", // default values here, stored as comma delim
