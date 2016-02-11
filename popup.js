@@ -4,23 +4,6 @@ function setWorkingFlag(flag) {
 	obj['workingNow'] = flag
 
 	chrome.storage.sync.set(obj)
-
-	// set popup icon
-	if (flag) {
-		chrome.browserAction.setIcon({
-	        path:"workmode_on.png",
-	    });
-	    chrome.browserAction.setBadgeText({
-	        text:"ON",
-	    });
-	} else {
-		chrome.browserAction.setIcon({
-	        path:"workmode_off.png",
-	    });
-		chrome.browserAction.setBadgeText({
-	        text:"OFF",
-	    });
-	}
 }
 
 function saveBlockedSites() {
@@ -104,10 +87,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	        'workingNow' : false,
 	        'redirectTo' : '' // default or custom page
 	    }, function(items) {
-	    	if (!items.workingNow) { // on open of tab, ALWAYS turn on the working setting - more productive that way :)
-		    	setWorkingFlag(true)
-	    	}
-	    	
+	    		if (!items.workingNow) { // on open of tab, ALWAYS turn on the working setting - more productive that way :)
+		    		setWorkingFlag(true)
+	    		}
+
+				// set popup icon
+				chrome.browserAction.setIcon({
+		        	path:"workmode_on.png",
+		    	});
+		    	chrome.browserAction.setBadgeText({
+		        	text:"ON",
+		    	});
 	    	textArea.value=items.sitesToBlock.split(",").join("\n")
 		}
 	);
@@ -115,7 +105,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	button.addEventListener("click", function() {
 		setWorkingFlag(false);
-		window.close();
+		var w = window
+		chrome.browserAction.setBadgeText({
+        	text:"OFF",
+    	})
+		chrome.browserAction.setIcon({
+		   	path:"workmode_off.png",
+		}, function() {
+			window.close()
+		})
 	});
 
 
