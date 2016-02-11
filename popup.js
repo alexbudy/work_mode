@@ -34,15 +34,19 @@ function addLinkListeners() {
 
 	base_url.addEventListener('click', function() {
 		chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-		    addLineToTextArea(getBaseUrlFromFullUrl(tabs[0].url));
-		    saveBlockedSites()
+		    if (addLineToTextArea(getBaseUrlFromFullUrl(tabs[0].url))) {
+			    saveBlockedSites()
+			    chrome.runtime.sendMessage({redirect: "http://redirect"});
+		    }
 		});
 	})
 
 	full_url.addEventListener('click', function() {
 		chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-		    addLineToTextArea(tabs[0].url);
-		    saveBlockedSites()
+		    if (addLineToTextArea(tabs[0].url)) {
+			    saveBlockedSites()
+			    chrome.runtime.sendMessage({redirect: "http://redirect", tabid: tabs[0].id});
+		    }
 		});
 	})
 }
@@ -61,10 +65,9 @@ function getBaseUrlFromFullUrl(fullUrl) {
 
 // add a line to the text area if line not there 
 function addLineToTextArea(line) {
-	if (line.indexOf("chrome-extension:") == 0) { // special case, dont block chrome extension pages
-		return
+	if (line.indexOf("chrome-extension:") == 0 || line.indexOf("chrome://") == 0) { // special case, dont block chrome extension pages
+		return false
 	}
-
 	line  = line.replace("https://", "").replace("http://", "")
 
 	var textArea = document.getElementById("blockedSitesTextArea");
@@ -76,6 +79,8 @@ function addLineToTextArea(line) {
 			textArea.value = textArea.value + "\n" + line
 		}
 	}
+
+	return true
 }
 
 document.addEventListener('DOMContentLoaded', function() {

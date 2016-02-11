@@ -1,7 +1,12 @@
-// simply reorute the page in backgriund script
+// simply reroute the page in background script
 chrome.runtime.onMessage.addListener(function(request, sender) 
 	{
-    	chrome.tabs.update(sender.tab.id, {url: chrome.extension.getURL("working.html")});
+		if (sender.tab == undefined) {
+			tabid = request.tabid
+		} else {
+			tabid = sender.tab.id
+		}
+    	chrome.tabs.update(tabid, {url: chrome.extension.getURL("working.html")});
 	}
 );
 
