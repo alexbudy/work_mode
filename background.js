@@ -6,7 +6,13 @@ chrome.runtime.onMessage.addListener(function(request, sender)
 		} else {
 			tabid = sender.tab.id
 		}
-    	chrome.tabs.update(tabid, {url: chrome.extension.getURL("working.html")});
+
+		if (request.from) {
+	    	chrome.tabs.update(tabid, {url: chrome.extension.getURL("working.html?from=" + request.from)});
+		} else {
+	    	chrome.tabs.update(tabid, {url: chrome.extension.getURL("working.html")});
+		}
+
 	}
 );
 

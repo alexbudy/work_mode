@@ -11,6 +11,10 @@ body {
 	padding: 0;
 }
 
+#sites_to_block_div {
+	font-size: 120%;
+}
+
 #working_status_div {
 	padding-top: 30px;
     font-size: 130%;
@@ -25,4 +29,8 @@ body {
 a {
 	text-decoration: underline;
 	cursor: pointer;
+}
+
+#blockAllSites {
+	font-size: 130%;
 }

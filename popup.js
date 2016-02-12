@@ -1,7 +1,17 @@
-// sets workingNow flag to !flag in chrome storage
+var blockText = "Block all sites"
+var unblockText = "Lift total block"
+
+// sets workingNow flag in chrome storage
 function setWorkingFlag(flag) {
 	var obj = {}
 	obj['workingNow'] = flag
+
+	chrome.storage.sync.set(obj)
+}
+
+function setBlockAllSites(flag) {
+	var obj = {}
+	obj['blockAllSites'] = flag
 
 	chrome.storage.sync.set(obj)
 }
@@ -31,6 +41,7 @@ function saveBlockedSites() {
 function addLinkListeners() {
 	var base_url = document.getElementById("base_url_id");
 	var full_url = document.getElementById("full_url_id");
+	var block_sites_url = document.getElementById("blockAllSites");
 
 	base_url.addEventListener('click', function() {
 		chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
@@ -45,9 +56,21 @@ function addLinkListeners() {
 		chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
 		    if (addLineToTextArea(tabs[0].url)) {
 			    saveBlockedSites()
-			    chrome.runtime.sendMessage({redirect: "http://redirect", tabid: tabs[0].id});
+			    chrome.runtime.sendMessage({redirect: "http://redirect"});
 		    }
 		});
+	})
+
+	block_sites_url.addEventListener('click', function() {
+
+		if (block_sites_url.text == blockText) {
+			block_sites_url.text = unblockText
+			setBlockAllSites(true)
+			chrome.runtime.sendMessage({redirect: "http://redirect"});
+		} else {
+			block_sites_url.text = blockText
+			setBlockAllSites(false)			
+		}
 	})
 }
 
@@ -86,14 +109,21 @@ function addLineToTextArea(line) {
 document.addEventListener('DOMContentLoaded', function() {
 	var button = document.getElementById("stopWorkingBtn");
 	var textArea = document.getElementById("blockedSitesTextArea");
+	var block_sites_url = document.getElementById("blockAllSites");
 
 	chrome.storage.sync.get({
-	        'sitesToBlock' : "facebook,espn", // default values here, stored as comma delim
+	        'sitesToBlock' : "", // default values here, stored as comma delim
 	        'workingNow' : false,
-	        'redirectTo' : '' // default or custom page
+	        'blockAllSites' : false
 	    }, function(items) {
 	    		if (!items.workingNow) { // on open of tab, ALWAYS turn on the working setting - more productive that way :)
 		    		setWorkingFlag(true)
+	    		}
+
+	    		if (items.blockAllSites) {
+	    			block_sites_url.text = unblockText
+	    		} else {
+	    			block_sites_url.text = blockText
 	    		}
 
 				// set popup icon
@@ -110,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	button.addEventListener("click", function() {
 		setWorkingFlag(false);
-		var w = window
+		setBlockAllSites(true)		
 		chrome.browserAction.setBadgeText({
         	text:"OFF",
     	})
@@ -120,7 +150,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			window.close()
 		})
 	});
-
 
 	textArea.addEventListener("input", saveBlockedSites)
 
