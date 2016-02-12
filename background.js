@@ -18,7 +18,7 @@ chrome.runtime.onMessage.addListener(function(request, sender)
 
 
 chrome.storage.sync.get({
-	        'sitesToBlock' : ["facebook"], // default values here
+	        'sitesToBlock' : "", // default values here
 	        'workingNow' : false,
 	    }, function(items) {
     		// set popup icon

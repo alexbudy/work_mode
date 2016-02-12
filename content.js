@@ -5,7 +5,7 @@ chrome.storage.sync.get({
 	    }, function(items) {
 			curUrl = location.href.toLowerCase()
 	    	
-	    	if (items.blockAllSites) {
+	    	if (items.blockAllSites && items.workingNow) {
 	    		console.log(curUrl)
 	    		chrome.runtime.sendMessage({redirect: "http://redirect", from: curUrl});
 	    		return;
