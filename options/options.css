@@ -1,0 +1,22 @@
+table, caption, tbody, tfoot, thead, tr, th, td {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    font-size: 140%;
+    background: transparent;
+}
+
+h1 {
+
+}
+
+div {
+	font-size: 140%;
+}
+
+#contact {
+	font-size: 125%;
+	padding-top: 50px;
+    bottom: 10;
+    right: 10;
+}

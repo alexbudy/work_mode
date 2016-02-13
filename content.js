@@ -12,19 +12,25 @@ function startWorkFunction(e) {
         return
     }
 
-    var MKEY = 77;
-    var WKEY = 87;
+   chrome.storage.sync.get({
+	        enableTheEnableControl : true
+	    }, function(items) {
+		    var MKEY = 77;
+		    var WKEY = 87;
 
-    if (e.which == MKEY || e.which == WKEY) {
+		    if (items.enableTheEnableControl && (e.which == MKEY || e.which == WKEY)) {
 
-    	var obj = {}
-		obj['workingNow'] = true
-		obj['blockAllSites'] = false
+		    	var obj = {}
+				obj['workingNow'] = true
+				obj['blockAllSites'] = false
 
-		chrome.storage.sync.set(obj, function() {
-	    	chrome.runtime.sendMessage({turnOn: true});			
-		})
-    }
+				chrome.storage.sync.set(obj, function() {
+			    	chrome.runtime.sendMessage({turnOn: true});			
+				})
+		    } 
+		}
+	);
+
 }
 
 function redirectIfFlagsSet() {
