@@ -42,12 +42,13 @@ function addLinkListeners() {
 	var base_url = document.getElementById("base_url_id");
 	var full_url = document.getElementById("full_url_id");
 	var block_sites_url = document.getElementById("blockAllSites");
+	var show_site_url = document.getElementById("allowThisSiteLink")
 
 	base_url.addEventListener('click', function() {
 		chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
 		    if (addLineToTextArea(getBaseUrlFromFullUrl(tabs[0].url))) {
 			    saveBlockedSites()
-			    chrome.runtime.sendMessage({redirect: "http://redirect"});
+			    chrome.runtime.sendMessage({redirect: "workingpage"});
 		    }
 		});
 	})
@@ -56,21 +57,33 @@ function addLinkListeners() {
 		chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
 		    if (addLineToTextArea(tabs[0].url)) {
 			    saveBlockedSites()
-			    chrome.runtime.sendMessage({redirect: "http://redirect"});
+			    chrome.runtime.sendMessage({redirect: "workingpage"});
 		    }
 		});
 	})
 
 	block_sites_url.addEventListener('click', function() {
-
 		if (block_sites_url.text == blockText) {
 			block_sites_url.text = unblockText
 			setBlockAllSites(true)
-			chrome.runtime.sendMessage({redirect: "http://redirect"});
+			chrome.runtime.sendMessage({redirect: "workingpage"});
 		} else {
 			block_sites_url.text = blockText
 			setBlockAllSites(false)			
 		}
+	})
+
+	allowThisSiteLink.addEventListener('click', function() {
+		chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+		    if (tabs[0].url.split("?from=").length > 1) {
+		    	var obj = {}
+				obj['bypassFilterFlag'] = true
+
+				chrome.storage.sync.set(obj, function() {
+				    chrome.runtime.sendMessage({redirect: tabs[0].url.split("?from=")[1]});
+				})
+		    }
+		});
 	})
 }
 
@@ -140,9 +153,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	button.addEventListener("click", function() {
 		setWorkingFlag(false);
-		setBlockAllSites(true)		
+		setBlockAllSites(false)		
 		chrome.browserAction.setBadgeText({
-        	text:"OFF",
+        	text:"",
     	})
 		chrome.browserAction.setIcon({
 		   	path:"workmode_off.png",
