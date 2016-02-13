@@ -2,7 +2,7 @@ body {
 	font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
 	font-size: 100%;
 	width: 300;
-	height: 450;
+	height: 474;
 	background-image: linear-gradient(#d1d1e0, #eeeeee);
 	text-align: center;
 	color: #292926;
@@ -17,10 +17,15 @@ body {
 }
 
 #working_status_div {
-	padding-top: 20px;
+	padding-top: 10px;
     font-size: 130%;
     padding-bottom: 20px;
     margin: auto;
+}
+
+#workingFor {
+	padding-top: 5px;
+	font-size: 115%;
 }
 
 #stopWorkingBtn { 

@@ -1,5 +1,5 @@
-var blockText = "Block all sites"
-var unblockText = "Lift total block"
+var blockText = "Block All Sites"
+var unblockText = "Lift Total Block"
 
 // sets workingNow flag in chrome storage
 function setWorkingFlag(flag) {
@@ -12,6 +12,13 @@ function setWorkingFlag(flag) {
 function setBlockAllSites(flag) {
 	var obj = {}
 	obj['blockAllSites'] = flag
+
+	chrome.storage.sync.set(obj)
+}
+
+function setTimeStampToNow() {
+	var obj = {}
+	obj['lastTimeStamp'] = Date.now()
 
 	chrome.storage.sync.set(obj)
 }
@@ -66,7 +73,9 @@ function addLinkListeners() {
 		if (block_sites_url.text == blockText) {
 			block_sites_url.text = unblockText
 			setBlockAllSites(true)
-			chrome.runtime.sendMessage({redirect: "workingpage"});
+			if (location.href.indexOf("chrome-extension://") != 0) {
+				chrome.runtime.sendMessage({redirect: "workingpage"});
+			}
 		} else {
 			block_sites_url.text = blockText
 			setBlockAllSites(false)			
@@ -120,34 +129,60 @@ function addLineToTextArea(line) {
 	return true
 }
 
+// from, to
+function timeDiffInStrForm(t1, t2) {
+	duration = t2-t1
+	console.log(duration)
+    var milliseconds = parseInt((duration%1000)/100)
+    , seconds = parseInt((duration/1000)%60)
+    , minutes = parseInt((duration/(1000*60))%60)
+    , hours = parseInt((duration/(1000*60*60))%24);
+
+	hours = (hours < 10) ? "0" + hours : hours;
+	minutes = (minutes < 10) ? "0" + minutes : minutes;
+	seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+	return "<b>" + hours + "H " + minutes + "M </b>"
+}
+
 document.addEventListener('DOMContentLoaded', function() {
 	var button = document.getElementById("stopWorkingBtn");
 	var textArea = document.getElementById("blockedSitesTextArea");
 	var block_sites_url = document.getElementById("blockAllSites");
+	var lastTimerDiv = document.getElementById("workingFor");
 
 	chrome.storage.sync.get({
 	        'sitesToBlock' : "", // default values here, stored as comma delim
 	        'workingNow' : false,
-	        'blockAllSites' : false
+	        'blockAllSites' : false,
+	        'lastTimeStamp' : 11111111
 	    }, function(items) {
-	    		if (!items.workingNow) { // on open of tab, ALWAYS turn on the working setting - more productive that way :)
-		    		setWorkingFlag(true)
-	    		}
+    		if (!items.workingNow) { // on open of tab, ALWAYS turn on the working setting - more productive that way :)
+	    		setWorkingFlag(true)
+	    		setTimeStampToNow()
+	    		items.lastTimeStamp = Date.now()
+    		}
+    		if (items.lastTimeStamp == undefined) {
+	    		setTimeStampToNow()
+    			items.lastTimeStamp = Date.now()
+    		}
 
-	    		if (items.blockAllSites) {
-	    			block_sites_url.text = unblockText
-	    		} else {
-	    			block_sites_url.text = blockText
-	    		}
+    		if (items.blockAllSites) {
+    			block_sites_url.text = unblockText
+    		} else {
+    			block_sites_url.text = blockText
+    		}
 
-				// set popup icon
-				chrome.browserAction.setIcon({
-		        	path:"workmode_on.png",
-		    	});
-		    	chrome.browserAction.setBadgeText({
-		        	text:"ON",
-		    	});
+			// set popup icon
+			chrome.browserAction.setIcon({
+	        	path:"workmode_on.png",
+	    	});
+	    	chrome.browserAction.setBadgeText({
+	        	text:"ON",
+	    	});
 	    	textArea.value=items.sitesToBlock.split(",").join("\n")
+	    	console.log(items.lastTimeStamp)
+	    	lastTimerDiv.innerHTML = lastTimerDiv.innerHTML + timeDiffInStrForm(items.lastTimeStamp, Date.now())
 		}
 	);
 
