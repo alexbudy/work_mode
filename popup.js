@@ -73,7 +73,7 @@ function addLinkListeners() {
 		}
 	})
 
-	allowThisSiteLink.addEventListener('click', function() {
+	show_site_url.addEventListener('click', function() {
 		chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
 		    if (tabs[0].url.split("?from=").length > 1) {
 		    	var obj = {}
@@ -81,6 +81,7 @@ function addLinkListeners() {
 
 				chrome.storage.sync.set(obj, function() {
 				    chrome.runtime.sendMessage({redirect: tabs[0].url.split("?from=")[1]});
+				    window.close()
 				})
 		    }
 		});

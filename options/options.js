@@ -6,7 +6,8 @@ function saveOptions() {
 
 function restore_options() {
 	chrome.storage.sync.get({
-		enableTheEnableControl : true
+		enableTheEnableControl : true,
+		enableAddCurrentToBlock: false
 	}, function(items) {
 		var chkBoxes=document.getElementsByName("options")
 

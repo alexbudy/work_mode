@@ -12,7 +12,6 @@ chrome.runtime.onMessage.addListener(function(request, sender)
 		}
 
 		if (request.redirect == "workingpage") {
-
 			if (request.from) {
 		    	chrome.tabs.update(tabid, {url: chrome.extension.getURL("working.html?from=" + request.from)});
 			} else {
@@ -21,6 +20,7 @@ chrome.runtime.onMessage.addListener(function(request, sender)
 		} else if (request.redirect) {
 			chrome.tabs.update(tabid, {url: request.redirect})
 		}
+		setModeFromSettings()
 	}
 );
 
@@ -28,9 +28,17 @@ function setModeFromSettings() {
 	chrome.storage.sync.get({
 		        'sitesToBlock' : "", // default values here
 		        'workingNow' : false,
+		        'blockAllSites' : false
 		    }, function(items) {
 	    		// set popup icon
-				if (items.workingNow) {
+	    		if (items.blockAllSites) {
+					chrome.browserAction.setIcon({
+				        path:"workmode_on.png",
+				    });
+				    chrome.browserAction.setBadgeText({
+				        text:"ALL",
+				    });
+	    		} else if (items.workingNow) {
 					chrome.browserAction.setIcon({
 				        path:"workmode_on.png",
 				    });

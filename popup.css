@@ -12,6 +12,7 @@ body {
 }
 
 #sites_to_block_div {
+	padding-top: 3px;
 	font-size: 120%;
 }
 

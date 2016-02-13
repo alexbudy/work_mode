@@ -1,7 +1,6 @@
 window.addEventListener('keyup', startWorkFunction, false)
 
 window.onfocus = function () { 
-	console.log('test')
  	redirectIfFlagsSet()
 }; 
 
@@ -11,15 +10,16 @@ function startWorkFunction(e) {
     if (!e.ctrlKey || !e.altKey) { 
         return
     }
-
    chrome.storage.sync.get({
-	        enableTheEnableControl : true
+	        enableTheEnableControl : true,
+	        enableAddCurrentToBlock: false,
+	        sitesToBlock : ""
 	    }, function(items) {
 		    var MKEY = 77;
 		    var WKEY = 87;
+		    var AKEY = 65;
 
 		    if (items.enableTheEnableControl && (e.which == MKEY || e.which == WKEY)) {
-
 		    	var obj = {}
 				obj['workingNow'] = true
 				obj['blockAllSites'] = false
@@ -27,7 +27,20 @@ function startWorkFunction(e) {
 				chrome.storage.sync.set(obj, function() {
 			    	chrome.runtime.sendMessage({turnOn: true});			
 				})
-		    } 
+		    } else if (items.enableAddCurrentToBlock && e.which == AKEY) {
+		    	sites = items.sitesToBlock
+		    	curUrl = location.href.replace("https://", "").replace("http://", "")
+		    	if (sites.indexOf(curUrl) > -1) {
+		    		return // already there
+		    	}
+
+				var obj = {}
+				obj['sitesToBlock'] = sites + "," + curUrl
+
+				chrome.storage.sync.set(obj, function() {
+					chrome.runtime.sendMessage({redirect: "workingpage", from: curUrl});					
+				})
+		    }
 		}
 	);
 
@@ -47,7 +60,6 @@ function redirectIfFlagsSet() {
 					chrome.storage.sync.set(obj)
 					return
 		    	}
-
 				curUrl = location.href.toLowerCase()
 		    	
 		    	if (items.blockAllSites && items.workingNow) {
@@ -58,6 +70,10 @@ function redirectIfFlagsSet() {
 		    	if (items.workingNow) {
 					sites = items.sitesToBlock.split(",")
 					for (var i = 0; i < sites.length; i++) {
+						if (sites[i].trim().length == 0) {
+							continue
+						}
+
 						if (curUrl.indexOf(sites[i]) > -1) {
 							chrome.runtime.sendMessage({redirect: "workingpage", from: curUrl});
 						}
