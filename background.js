@@ -33,21 +33,21 @@ function setModeFromSettings() {
 	    		// set popup icon
 	    		if (items.blockAllSites) {
 					chrome.browserAction.setIcon({
-				        path:"workmode_on.png",
+				        path:"workmode_on-38.png",
 				    });
 				    chrome.browserAction.setBadgeText({
 				        text:"ALL",
 				    });
 	    		} else if (items.workingNow) {
 					chrome.browserAction.setIcon({
-				        path:"workmode_on.png",
+				        path:"workmode_on-38.png",
 				    });
 				    chrome.browserAction.setBadgeText({
 				        text:"ON",
 				    });
 				} else {
 					chrome.browserAction.setIcon({
-				        path:"workmode_off.png",
+				        path:"workmode_off-38.png",
 				    });
 					chrome.browserAction.setBadgeText({
 				        text:"",

@@ -104,7 +104,7 @@ function getBaseUrlFromFullUrl(fullUrl) {
 	var match = patt.exec(fullUrl)
 
 	if (match != undefined) {
-		console.log(match[0].replace("https://", "").replace("http://", ""))
+		//console.log(match[0].replace("https://", "").replace("http://", ""))
 		return match[0].replace("https://", "").replace("http://", "")
 	}
 }
@@ -132,7 +132,7 @@ function addLineToTextArea(line) {
 // from, to
 function timeDiffInStrForm(t1, t2) {
 	duration = t2-t1
-	console.log(duration)
+	//console.log(duration)
     var milliseconds = parseInt((duration%1000)/100)
     , seconds = parseInt((duration/1000)%60)
     , minutes = parseInt((duration/(1000*60))%60)
@@ -175,13 +175,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 			// set popup icon
 			chrome.browserAction.setIcon({
-	        	path:"workmode_on.png",
+	        	"path":"workmode_on-38.png",
 	    	});
 	    	chrome.browserAction.setBadgeText({
 	        	text:"ON",
 	    	});
 	    	textArea.value=items.sitesToBlock.split(",").join("\n")
-	    	console.log(items.lastTimeStamp)
+	    	//console.log(items.lastTimeStamp)
 	    	lastTimerDiv.innerHTML = lastTimerDiv.innerHTML + timeDiffInStrForm(items.lastTimeStamp, Date.now())
 		}
 	);
@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
         	text:"",
     	})
 		chrome.browserAction.setIcon({
-		   	path:"workmode_off.png",
+		   	path:"workmode_off-38.png",
 		}, function() {
 			window.close()
 		})
